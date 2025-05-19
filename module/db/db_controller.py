@@ -1,7 +1,7 @@
 from datetime import datetime, time, timedelta
 import os
 
-from dotenv import load_dotenv  # ローカルで行う場合
+# from dotenv import load_dotenv  # ローカルで行う場合
 from supabase import create_client, Client
 
 from schemas.user import UserSchema, InsertUserSchema, UpdateUserSchema
@@ -9,7 +9,7 @@ from schemas.place import PlaceSchema, InsertPlaceSchema
 from schemas.shift import ShiftSchema, InsertShiftSchema
 
 
-load_dotenv()  # ローカルで行う場合
+# load_dotenv()  # ローカルで行う場合
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 

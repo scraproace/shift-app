@@ -14,7 +14,7 @@ LIMIT_AMOUNT = 1_030_000  # 限度額
 PIE_FONTPATH = './fonts/msgothic.ttc'  # 円グラフのフォントパス
 
 
-def show_home_page(db: DBController) -> None:
+def show_home_page(_) -> None:
     """ホームページを表示"""
     session_shifts: list[ShiftSchema] = st.session_state['shifts']
 
@@ -59,9 +59,6 @@ def show_home_page(db: DBController) -> None:
 
             place_start_datetime, place_end_datetime = _get_date_period(today, place_pay_day)
             to_pay_day = (place_end_datetime - today).days
-            print(place_end_datetime)
-            print(today)
-            print(place_end_datetime-today)
 
             place_next_shift = _get_next_shift(session_shifts, today, place_id)
 
@@ -69,8 +66,6 @@ def show_home_page(db: DBController) -> None:
                 '勤務先名': place,
                 '締め日までの見込額': f'{place_amount:,}円',
                 '次回出勤日': place_next_shift.strftime('%Y/%m/%d') if place_next_shift else 'なし',
-                'tes1': place_end_datetime,
-                'tes2': today,
                 # '締め日まで': f'{to_closing_day}日',
                 '給料日まで': f'{to_pay_day}日',
             })
