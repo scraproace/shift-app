@@ -59,6 +59,9 @@ def show_home_page(db: DBController) -> None:
 
             place_start_datetime, place_end_datetime = _get_date_period(today, place_pay_day)
             to_pay_day = (place_end_datetime - today).days
+            print(place_end_datetime)
+            print(today)
+            print(place_end_datetime-today)
 
             place_next_shift = _get_next_shift(session_shifts, today, place_id)
 
