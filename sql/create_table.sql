@@ -13,6 +13,7 @@ CREATE TABLE places (
     wage INTEGER NOT NULL,
     has_night_wage BOOLEAN NOT NULL,
     closing_day INTEGER NOT NULL,
+    pay_day INTEGER NOT NULL,
     is_valid BOOLEAN NOT NULL DEFAULT true,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
