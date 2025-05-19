@@ -69,6 +69,8 @@ def show_home_page(db: DBController) -> None:
                 '勤務先名': place,
                 '締め日までの見込額': f'{place_amount:,}円',
                 '次回出勤日': place_next_shift.strftime('%Y/%m/%d') if place_next_shift else 'なし',
+                'tes1': place_end_datetime,
+                'tes2': today,
                 # '締め日まで': f'{to_closing_day}日',
                 '給料日まで': f'{to_pay_day}日',
             })
