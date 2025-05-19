@@ -38,6 +38,7 @@ def show_home_page(db: DBController) -> None:
                 'start_datetime': shift.start_datetime,
                 'end_datetime': shift.end_datetime,
                 'closing_day': shift.closing_day,
+                'pay_day': shift.pay_day,
             }
             for shift in session_shifts
         ])
@@ -45,6 +46,7 @@ def show_home_page(db: DBController) -> None:
         for place, grouped_df in shift_df.groupby('place'):
             place_id = grouped_df.place_id.iloc[0]
             place_closing_day = grouped_df.closing_day.iloc[0]
+            place_pay_day = grouped_df.pay_day.iloc[0]
 
             place_start_datetime, place_end_datetime = _get_date_period(today, place_closing_day)
             to_closing_day = (place_end_datetime - today).days
@@ -52,18 +54,23 @@ def show_home_page(db: DBController) -> None:
             mask = (place_start_datetime < grouped_df['end_datetime']) & (grouped_df['end_datetime'] <= place_end_datetime)
             place_amount = grouped_df.loc[mask, 'amount'].sum()
 
+            if place_amount == 0:
+                continue
+
+            place_start_datetime, place_end_datetime = _get_date_period(today, place_pay_day)
+            to_pay_day = (place_end_datetime - today).days
+
             place_next_shift = _get_next_shift(session_shifts, today, place_id)
 
             place_infos.append({
                 '勤務先名': place,
-                '見込額': place_amount,
+                '締め日までの見込額': f'{place_amount:,}円',
                 '次回出勤日': place_next_shift.strftime('%Y/%m/%d') if place_next_shift else 'なし',
-                '締め日までの日数': to_closing_day,
+                '締め日まで': f'{to_closing_day}日',
+                '給料日まで': f'{to_pay_day}日',
             })
 
         place_df = pd.DataFrame(place_infos)
-        place_df = place_df[place_df['見込額'] != 0]
-        place_df['見込額'] = place_df['見込額'].apply(lambda x: f'{x:,}円')
 
     st.subheader('ホーム')
 

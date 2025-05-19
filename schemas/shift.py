@@ -14,6 +14,7 @@ class ShiftSchema(BaseModel):
     wage: int = Field(..., ge=0)
     has_night_wage: bool
     closing_day: int = Field(..., ge=1, le=31)
+    pay_day: int = Field(..., ge=1, le=31)
     amount: int = Field(..., ge=0)
 
 

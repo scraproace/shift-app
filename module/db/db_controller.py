@@ -85,7 +85,7 @@ class DBController():
 
     def get_shifts(self, user_id: int) -> list[ShiftSchema]:
         """シフト情報取得"""
-        response = self.supabase.table('shifts').select('*, places(name, wage, has_night_wage, closing_day)').eq('user_id', user_id).eq('is_valid', True).order('start_datetime').execute()
+        response = self.supabase.table('shifts').select('*, places(name, wage, has_night_wage, closing_day, pay_day)').eq('user_id', user_id).eq('is_valid', True).order('start_datetime').execute()
         shifts = response.data
         for shift in shifts:
             shift['start_datetime'] = datetime.fromisoformat(shift['start_datetime'])
@@ -95,6 +95,7 @@ class DBController():
             shift['wage'] = shift['places']['wage']
             shift['has_night_wage'] = shift['places']['has_night_wage']
             shift['closing_day'] = shift['places']['closing_day']
+            shift['pay_day'] = shift['places']['pay_day']
             shift['amount'] = self._caliculate_amount(
                 shift['start_datetime'],
                 shift['end_datetime'],
