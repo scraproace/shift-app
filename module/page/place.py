@@ -17,6 +17,7 @@ def show_place_page(db: DBController) -> None:
                 '時給': f'{place.wage:,}円',
                 '深夜給': '有' if place.has_night_wage else '無',
                 '締め日': f'{place.closing_day}日',
+                '給料日': f'{place.pay_day}日',
             }
             for place in session_places
         ])
@@ -56,6 +57,7 @@ def _show_add_form(db: DBController) -> None:
         wage = st.number_input('時給(円)を入力してください', value=1000, key='wage', step=1)
         has_night_wage = st.checkbox('深夜手当あり', value=False, key='has_night_wage')
         closing_day = st.number_input('締め日を入力してください', value=15, min_value=1, max_value=31, key='closing_day', step=1)
+        pay_day = st.number_input('給料日を入力してください', value=25, min_value=1, max_value=31, key='pay_day', step=1)
 
         if st.form_submit_button('追加', type='primary'):
             if len(name) == 0:
@@ -67,6 +69,7 @@ def _show_add_form(db: DBController) -> None:
                     wage=wage,
                     has_night_wage=has_night_wage,
                     closing_day=closing_day,
+                    pay_day=pay_day,
                 )
 
                 if db.add_place(insert_place):
@@ -83,6 +86,7 @@ def _show_detail(place: PlaceSchema, db: DBController):
     st.write(f'時給: {place.wage:,}円')
     st.write(f"深夜給: {'有' if place.has_night_wage else '無'}")
     st.write(f'締め日：{place.closing_day}日')
+    st.write(f'給料日：{place.pay_day}日')
 
     if st.button('削除', type='primary', key='delete_shift_btn'):
         db.delete_place(place.id)

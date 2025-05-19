@@ -7,6 +7,7 @@ class PlaceSchema(BaseModel):
     name: str = Field(..., min_length=1)
     wage: int = Field(..., ge=0)
     closing_day: int = Field(..., ge=1, le=31)
+    pay_day: int = Field(..., ge=1, le=31)
     has_night_wage: bool
     is_valid: bool
 
@@ -16,4 +17,5 @@ class InsertPlaceSchema(BaseModel):
     name: str = Field(..., min_length=1)
     wage: int = Field(..., ge=0)
     closing_day: int = Field(..., ge=1, le=31)
+    pay_day: int = Field(..., ge=1, le=31)
     has_night_wage: bool
