@@ -7,6 +7,7 @@ from supabase import create_client, Client
 from schemas.user import UserSchema, InsertUserSchema, UpdateUserSchema
 from schemas.place import PlaceSchema, InsertPlaceSchema
 from schemas.shift import ShiftSchema, InsertShiftSchema
+from schemas.template import TemplateSchema, InsertTemplateSchema
 
 
 # load_dotenv()  # ローカルで行う場合
@@ -63,9 +64,18 @@ class DBController():
         response = self.supabase.table('places').select('*').eq('user_id', user_id).eq('is_valid', True).order('id').execute()
         return [PlaceSchema.model_validate(place) for place in response.data]
 
-    def delete_place(self, id: int) -> None:
+    def delete_place(self, id: int) -> bool:
         """勤務先削除"""
+        response = self.supabase.table('shifts').select('id').eq('place_id', id).eq('is_valid', True).limit(1).execute()
+        if response.data:
+            return False
+
+        response = self.supabase.table('templates').select('id').eq('place_id', id).eq('is_valid', True).limit(1).execute()
+        if response.data:
+            return False
+
         self.supabase.table('places').update({'is_valid': False}).eq('id', id).execute()
+        return True
 
     def add_shift(self, shift: InsertShiftSchema) -> bool:
         """シフト追加"""
@@ -145,3 +155,29 @@ class DBController():
             amount = round(wage * (end_datetime - start_datetime - timedelta(hours=break_time.hour, minutes=break_time.minute)).seconds / 3600)
 
         return amount
+
+    def add_template(self, template: InsertTemplateSchema) -> bool:
+        """テンプレート追加"""
+        response = self.supabase.table('templates').select('id').eq('name', template.name).eq('is_valid', True).limit(1).execute()
+        if response.data:
+            return False
+
+        self.supabase.table('templates').insert(template.model_dump()).execute()
+        return True
+
+    def get_templates(self, user_id: int) -> list[TemplateSchema]:
+        """テンプレート情報取得"""
+        response = self.supabase.table('templates').select('*, places(name)').eq('user_id', user_id).eq('is_valid', True).order('id').execute()
+        templates = response.data
+        for template in templates:
+            template['start_time'] = time.fromisoformat(template['start_time'])
+            template['end_time'] = time.fromisoformat(template['end_time'])
+            template['break_time'] = time.fromisoformat(template['break_time'])
+            template['place'] = template['places']['name']
+            template.pop('places')
+
+        return [TemplateSchema.model_validate(template) for template in templates]
+
+    def delete_template(self, id: int) -> None:
+        """テンプレート削除"""
+        self.supabase.table('templates').update({'is_valid': False}).eq('id', id).execute()

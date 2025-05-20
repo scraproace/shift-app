@@ -24,6 +24,7 @@ def show_login_page(db: DBController) -> None:
                     st.session_state['user'] = user
                     st.session_state['places'] = db.get_places(user.id)
                     st.session_state['shifts'] = db.get_shifts(user.id)
+                    st.session_state['templates'] = db.get_templates(user.id)
                     st.rerun()
                 else:
                     st.error('ユーザー名またはパスワードが間違っています')

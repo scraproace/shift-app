@@ -29,3 +29,16 @@ CREATE TABLE shifts (
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (place_id) REFERENCES places (id)
 );
+
+CREATE TABLE templates (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    place_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    start_time INTERVAL NOT NULL,
+    end_time INTERVAL NOT NULL,
+    break_time INTERVAL NOT NULL,
+    is_valid BOOLEAN NOT NULL DEFAULT true,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (place_id) REFERENCES places (id)
+);

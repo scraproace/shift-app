@@ -24,7 +24,7 @@ def show_place_page(db: DBController) -> None:
 
     st.subheader('勤務先')
 
-    if st.button('追加', type='primary', key='add_place_btn'):
+    if st.button('追加', type='primary', key='add_btn'):
         _show_add_form(db)
 
     if st.session_state['places']:
@@ -80,7 +80,7 @@ def _show_add_form(db: DBController) -> None:
 
 
 @st.dialog('勤務先詳細')
-def _show_detail(place: PlaceSchema, db: DBController):
+def _show_detail(place: PlaceSchema, db: DBController) -> None:
     """勤務先詳細ダイアログを表示"""
     st.write(f'勤務先名：{place.name}')
     st.write(f'時給: {place.wage:,}円')
@@ -88,7 +88,9 @@ def _show_detail(place: PlaceSchema, db: DBController):
     st.write(f'締め日：{place.closing_day}日')
     st.write(f'給料日：{place.pay_day}日')
 
-    if st.button('削除', type='primary', key='delete_shift_btn'):
-        db.delete_place(place.id)
-        st.session_state['places'] = db.get_places(st.session_state['user_id'])
-        st.rerun()
+    if st.button('削除', type='primary', key='delete_btn'):
+        if db.delete_place(place.id):
+            st.session_state['places'] = db.get_places(st.session_state['user_id'])
+            st.rerun()
+        else:
+            st.error('勤務先に紐づくシフトまたはテンプレートが存在します')

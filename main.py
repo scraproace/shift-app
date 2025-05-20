@@ -1,7 +1,7 @@
 import streamlit as st
 
 from module.db import DBController
-from module.page import show_home_page, show_place_page, show_shift_page, show_setting_page, show_login_page, show_create_account_page
+from module.page import show_home_page, show_place_page, show_shift_page, show_template_page, show_setting_page, show_login_page, show_create_account_page
 
 
 def main():
@@ -19,6 +19,7 @@ def main():
             'ホーム': show_home_page,
             '勤務先': show_place_page,
             'シフト': show_shift_page,
+            'テンプレート': show_template_page,
             '設定': show_setting_page,
         }
     else:
